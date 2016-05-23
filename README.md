@@ -1,8 +1,8 @@
 # Bluesky
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/bluesky`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Your yaml configs are ignored from git?
+Tired of mismatching keys and finding out missing keys too late?
+Use bluesky to cook your config!
 
 ## Installation
 
@@ -22,7 +22,47 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+require "pathname"
+require "blueksy"
+config = 'config/application.yml'
+manifest = Pathname.new(__FILE__).relative_path_from(Rails.root)
+
+required_keys = %w[
+  SENDGRID_USER_NAME
+  SENDGRID_PASSWORD
+  SENDGRID_INVITATION_TEMPLATE
+  PUSH_SERVICE_HOST
+  REDIS_NAMESPACE
+  ENVIRONMENT_NAME
+]
+
+bluesky = Bluesky.new(required_keys, config: config, manifest: manifest)
+bluesky.cook(Figaro.application.configuration)
+
+```
+
+```bash
+rails s
+
+...
+
+##########
+
+Missing key from config/application.yml:
+  HELLO
+
+(Checked from config/initializers/figaro.rb)
+
+##########
+
+Extra key detected in config/application.yml:
+  JWT_SECRET_KEY
+
+Please add to config/initializers/figaro.rb!
+
+Exiting
+```
 
 ## Development
 
