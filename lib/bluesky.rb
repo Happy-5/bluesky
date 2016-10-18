@@ -8,6 +8,7 @@ class Bluesky
   end
 
   def cook(hash)
+    hash = hash.reject {|_, value| value.to_s.strip.empty? }
     valid = true
     valid &= no_missing_keys(hash)
     valid &= no_extra_keys(hash)
